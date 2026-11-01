@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>My Shopping Cart</title>
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f4f4;
+        margin: 0;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .cart-container {
+        max-width: 800px;
+        margin: auto;
+    }
+
+    .cart-item {
+        background: white;
+        padding: 20px;
+        margin-bottom: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px #ccc;
+    }
+
+    button {
+        padding: 8px 12px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        color: white;
+    }
+
+    .quantity-btn {
+        background: #087f5b;
+    }
+
+    .remove-btn {
+        background: #dc3545;
+    }
+
+    .total {
+        text-align: right;
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .continue {
+        display: inline-block;
+        background: #222;
+        color: white;
+        padding: 12px 18px;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+</style>
+
+
+</head>
+
+<body>
+
+<div class="cart-container">
+
+
+<h1>🛒 My Shopping Cart</h1>
+
+{% if items %}
+
+    {% for item in items %}
+
+        <div class="cart-item">
+
+            <h3>{{ item.product.name }}</h3>
+
+            <p>Price: ₹{{ item.product.price|floatformat:2 }}</p>
+
+            <p>Quantity: {{ item.quantity }}</p>
+
+            <p>
+                Subtotal:
+                ₹{% widthratio item.product.price 1 item.quantity %}
+            </p>
+
+            <p>
+                <strong>Quantity controls:</strong>
+            </p>
+
+            <form method="POST" action="{% url 'update_cart' item.id %}" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="decrease">
+                <button type="submit" class="quantity-btn">−</button>
+            </form>
+
+            <form method="POST" action="{% url 'update_cart' item.id %}" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="increase">
+                <button type="submit" class="quantity-btn">+</button>
+            </form>
+
+            <form method="POST" action="{% url 'remove_from_cart' item.id %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="remove-btn">Remove 🗑️</button>
+            </form>
+
+        </div>
+
+    {% endfor %}
+
+    <div class="total">
+        Total: ₹{{ total|floatformat:2 }}
+    </div>
+
+{% else %}
+
+    <p>Your cart is empty.</p>
+
+{% endif %}
+
+<br><br>
+
+<a href="/" class="continue">Continue Shopping</a>
+
+
+</div>
+
+</body>
+</html>

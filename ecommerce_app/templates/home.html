@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>My E-Commerce Store</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+        }
+
+
+    header {
+        background: #222;
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .products {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .card {
+        background: white;
+        padding: 20px;
+        width: 220px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px #ccc;
+    }
+
+    button {
+        background: #087f5b;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #065f46;
+    }
+
+    .messages {
+        padding: 10px 20px;
+    }
+
+    .cart-link {
+        color: white;
+        font-weight: bold;
+    }
+</style>
+
+
+</head>
+<body>
+
+
+<header>
+    <h1>My E-Commerce Store</h1>
+    <p>Find your favourite products!</p>
+    <a class="cart-link" href="{% url 'cart' %}">View My Cart 🛒</a>
+</header>
+
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="products">
+    {% for product in products %}
+        <div class="card">
+            <h2>{{ product.name }}</h2>
+            <p>{{ product.description }}</p>
+            <h3>₹{{ product.price }}</h3>
+            <p>Available: {{ product.stock }}</p>
+
+            {% if product.stock > 0 %}
+                <form method="POST" action="{% url 'add_to_cart' product.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Add to Cart 🛒</button>
+                </form>
+            {% else %}
+                <p>Out of Stock</p>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>No products available yet. Add products through the admin panel.</p>
+    {% endfor %}
+</div>
+
+
+</body>
+</html>
